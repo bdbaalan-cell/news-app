@@ -1,3 +1,4 @@
+const API = "https://your-app.onrender.com";
 let token = "";
 
 // 🔐 LOGIN
@@ -7,7 +8,7 @@ document.getElementById("loginForm").addEventListener("submit", async (e) => {
   const username = document.getElementById("username").value;
   const password = document.getElementById("password").value;
 
-  const res = await fetch("http://localhost:5000/api/login", {
+  const res = await fetch(`${API}/api/login`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
@@ -32,7 +33,7 @@ document.getElementById("registerForm").addEventListener("submit", async (e) => 
   const username = document.getElementById("regUsername").value;
   const password = document.getElementById("regPassword").value;
 
-  await fetch("http://localhost:5000/api/register", {
+  await fetch(`${API}/api/register`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
@@ -56,7 +57,7 @@ document.getElementById("postForm").addEventListener("submit", async (e) => {
     formData.append("image", fileInput.files[0]);
   }
 
-  await fetch("http://localhost:5000/api/posts", {
+  await fetch(`${API}/api/posts`, {
     method: "POST",
     headers: {
       "Authorization": token
@@ -70,7 +71,7 @@ document.getElementById("postForm").addEventListener("submit", async (e) => {
 
 // 📥 LOAD POSTS
 async function loadPosts() {
-  const res = await fetch("http://localhost:5000/api/posts");
+  const res = await fetch(`${API}/api/posts`);
   const posts = await res.json();
 
   const feed = document.getElementById("feed");
@@ -82,7 +83,7 @@ async function loadPosts() {
 
     div.innerHTML = `
   <h3>${post.title}</h3>
-  ${post.image ? `<img src="http://localhost:5000/uploads/${post.image}" />` : ""}
+ ${post.image ? `<img src="${API}/uploads/${post.image}" />` : ""}
   <p>${post.content}</p>
 
   <button onclick="likePost('${post._id}')">❤️ Like (${post.likes || 0})</button>
@@ -102,7 +103,7 @@ async function loadPosts() {
 
 loadPosts();
 async function likePost(id) {
-  await fetch(`http://localhost:5000/api/posts/${id}/like`, {
+  await fetch(`${API}/api/posts/${id}/like`, {
     method: "POST"
   });
 
@@ -114,7 +115,7 @@ async function addComment(id) {
 
   if (!text) return;
 
-  await fetch(`http://localhost:5000/api/posts/${id}/comment`, {
+  await fetch(`${API}/api/posts/${id}/comment`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
