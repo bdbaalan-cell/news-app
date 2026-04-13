@@ -17,7 +17,7 @@ const SECRET = "mysecretkey";
 app.use("/uploads", express.static("uploads"));
 
 // 🔗 MongoDB
-mongoose.connect("mongodb+srv://admin:1234@cluster0.lpwiusx.mongodb.net/newsApp")
+mongoose.connect(process.env.MONGO_URL)
 .then(() => console.log("✅ MongoDB Connected"))
 .catch(err => console.log(err));
 
