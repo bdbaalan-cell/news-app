@@ -1,5 +1,7 @@
 const API = "https://news-app-backend-my3n.onrender.com";
+
 let token = "";
+token = localStorage.getItem("token") || "";
 
 // 🔐 LOGIN
 document.getElementById("loginForm").addEventListener("submit", async (e) => {
@@ -10,9 +12,7 @@ document.getElementById("loginForm").addEventListener("submit", async (e) => {
 
   const res = await fetch(`${API}/api/login`, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ username, password })
   });
 
@@ -20,6 +20,7 @@ document.getElementById("loginForm").addEventListener("submit", async (e) => {
 
   if (data.token) {
     token = data.token;
+    localStorage.setItem("token", token);
     alert("Login successful ✅");
   } else {
     alert("Login failed ❌");
@@ -35,9 +36,7 @@ document.getElementById("registerForm").addEventListener("submit", async (e) => 
 
   await fetch(`${API}/api/register`, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
+    headers: {"Content-Type": "application/json"},
     body: JSON.stringify({ username, password })
   });
 
@@ -48,24 +47,27 @@ document.getElementById("registerForm").addEventListener("submit", async (e) => 
 document.getElementById("postForm").addEventListener("submit", async (e) => {
   e.preventDefault();
 
-  const formData = new FormData();
-  formData.append("title", document.getElementById("title").value);
-  formData.append("content", document.getElementById("content").value);
+  const title = document.getElementById("title").value;
+  const content = document.getElementById("content").value;
 
-  const fileInput = document.getElementById("image");
-  if (fileInput.files[0]) {
-    formData.append("image", fileInput.files[0]);
+  if (!title || !content) {
+    alert("Title and content required!");
+    return;
   }
+
+  const formData = new FormData();
+  formData.append("title", title);
+  formData.append("content", content);
+
+  const file = document.getElementById("image").files[0];
+  if (file) formData.append("image", file);
 
   await fetch(`${API}/api/posts`, {
     method: "POST",
-    headers: {
-      "Authorization": token
-    },
+    headers: { "Authorization": token },
     body: formData
   });
 
-  document.getElementById("postForm").reset();
   loadPosts();
 });
 
@@ -83,7 +85,10 @@ async function loadPosts() {
 
     div.innerHTML = `
       <h3>${post.title}</h3>
+      <h4>👤 ${post.user || "Anonymous"}</h4>
+
       ${post.image ? `<img src="${API}/uploads/${post.image}" />` : ""}
+
       <p>${post.content}</p>
 
       <button onclick="likePost('${post._id}')">
@@ -105,30 +110,34 @@ async function loadPosts() {
 
 // ❤️ LIKE
 async function likePost(id) {
-  await fetch(`${API}/api/posts/${id}/like`, {
-    method: "POST"
-  });
-
+  await fetch(`${API}/api/posts/${id}/like`, { method: "POST" });
   loadPosts();
 }
 
 // 💬 COMMENT
 async function addComment(id) {
-  const input = document.getElementById("comment-" + id);
-  const text = input.value;
-
+  const text = document.getElementById("comment-" + id).value;
   if (!text) return;
 
   await fetch(`${API}/api/posts/${id}/comment`, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
+    headers: {"Content-Type": "application/json"},
     body: JSON.stringify({ text })
   });
 
   loadPosts();
 }
 
-// 🚀 LOAD ON START
+// 🔓 LOGOUT
+function logout() {
+  localStorage.removeItem("token");
+  token = "";
+  alert("Logged out");
+}
+
+// 🚀 LOAD
 loadPosts();
+
+if (token) {
+  console.log("User already logged in");
+}
