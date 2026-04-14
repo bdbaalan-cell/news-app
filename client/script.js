@@ -78,36 +78,32 @@ async function loadPosts() {
   feed.innerHTML = "";
 
   posts.reverse().forEach(post => {
-  const div = document.createElement("div");
-  div.className = "post";
+    const div = document.createElement("div");
+    div.className = "post";
 
-  div.innerHTML = `
-    <h3>${post.title}</h3>
+    div.innerHTML = `
+      <h3>${post.title}</h3>
+      ${post.image ? `<img src="${API}/uploads/${post.image}" />` : ""}
+      <p>${post.content}</p>
 
-    ${post.image ? `<img src="${API}/uploads/${post.image}" />` : ""}
+      <button onclick="likePost('${post._id}')">
+        ❤️ Like (${post.likes || 0})
+      </button>
 
-    <p>${post.content}</p>
+      <div>
+        <h4>Comments:</h4>
+        ${(post.comments || []).map(c => `<p>💬 ${c.text}</p>`).join("")}
+      </div>
 
-    <button onclick="likePost('${post._id}')">
-      ❤️ Like (${post.likes || 0})
-    </button>
+      <input type="text" id="comment-${post._id}" placeholder="Write a comment">
+      <button onclick="addComment('${post._id}')">Comment</button>
+    `;
 
-    <div>
-      <h4>Comments:</h4>
-      ${(post.comments || []).map(c => `<p>💬 ${c.text}</p>`).join("")}
-    </div>
+    feed.appendChild(div);
+  });
+}
 
-    <input type="text" id="comment-${post._id}" placeholder="Write a comment">
-
-    <button onclick="addComment('${post._id}')">Comment</button>
-  `;
-
-  // ✅ THIS LINE WAS MISSING
-  feed.appendChild(div);
-
-}); // ✅ THIS WAS MISSING
-
-loadPosts();
+// ❤️ LIKE
 async function likePost(id) {
   await fetch(`${API}/api/posts/${id}/like`, {
     method: "POST"
@@ -115,6 +111,8 @@ async function likePost(id) {
 
   loadPosts();
 }
+
+// 💬 COMMENT
 async function addComment(id) {
   const input = document.getElementById("comment-" + id);
   const text = input.value;
@@ -131,3 +129,6 @@ async function addComment(id) {
 
   loadPosts();
 }
+
+// 🚀 LOAD ON START
+loadPosts();
