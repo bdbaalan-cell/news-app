@@ -81,9 +81,11 @@ async function loadPosts() {
     const div = document.createElement("div");
     div.className = "post";
 
-    div.innerHTML = `
+  div.innerHTML = `
   <h3>${post.title}</h3>
+
   ${post.image ? `<img src="${API}/uploads/${post.image}" />` : ""}
+
   <p>${post.content}</p>
 
   <button onclick="likePost('${post._id}')">
@@ -96,6 +98,7 @@ async function loadPosts() {
   </div>
 
   <input type="text" id="comment-${post._id}" placeholder="Write a comment">
+
   <button onclick="addComment('${post._id}')">Comment</button>
 `;
 }
