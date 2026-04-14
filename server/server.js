@@ -12,9 +12,6 @@ app.use(cors({
 
 app.use(express.json());
 
-app.use(cors());
-app.use(express.json());
-
 // 🔐 SECRET KEY
 const SECRET = "mysecretkey";
 

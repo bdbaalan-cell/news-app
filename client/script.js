@@ -1,4 +1,4 @@
-const API = "https://your-app.onrender.com";
+const API = "https://news-app-backend-my3n.onrender.com";
 let token = "";
 
 // 🔐 LOGIN
@@ -83,10 +83,12 @@ async function loadPosts() {
 
     div.innerHTML = `
   <h3>${post.title}</h3>
- ${post.image ? `<img src="${API}/uploads/${post.image}" />` : ""}
+  ${post.image ? `<img src="${API}/uploads/${post.image}" />` : ""}
   <p>${post.content}</p>
 
-  <button onclick="likePost('${post._id}')">❤️ Like (${post.likes || 0})</button>
+  <button onclick="likePost('${post._id}')">
+    ❤️ Like (${post.likes || 0})
+  </button>
 
   <div>
     <h4>Comments:</h4>
@@ -96,9 +98,6 @@ async function loadPosts() {
   <input type="text" id="comment-${post._id}" placeholder="Write a comment">
   <button onclick="addComment('${post._id}')">Comment</button>
 `;
-
-    feed.appendChild(div);
-  });
 }
 
 loadPosts();
