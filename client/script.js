@@ -78,30 +78,34 @@ async function loadPosts() {
   feed.innerHTML = "";
 
   posts.reverse().forEach(post => {
-    const div = document.createElement("div");
-    div.className = "post";
+  const div = document.createElement("div");
+  div.className = "post";
 
   div.innerHTML = `
-  <h3>${post.title}</h3>
+    <h3>${post.title}</h3>
 
-  ${post.image ? `<img src="${API}/uploads/${post.image}" />` : ""}
+    ${post.image ? `<img src="${API}/uploads/${post.image}" />` : ""}
 
-  <p>${post.content}</p>
+    <p>${post.content}</p>
 
-  <button onclick="likePost('${post._id}')">
-    ❤️ Like (${post.likes || 0})
-  </button>
+    <button onclick="likePost('${post._id}')">
+      ❤️ Like (${post.likes || 0})
+    </button>
 
-  <div>
-    <h4>Comments:</h4>
-    ${(post.comments || []).map(c => `<p>💬 ${c.text}</p>`).join("")}
-  </div>
+    <div>
+      <h4>Comments:</h4>
+      ${(post.comments || []).map(c => `<p>💬 ${c.text}</p>`).join("")}
+    </div>
 
-  <input type="text" id="comment-${post._id}" placeholder="Write a comment">
+    <input type="text" id="comment-${post._id}" placeholder="Write a comment">
 
-  <button onclick="addComment('${post._id}')">Comment</button>
-`;
-}
+    <button onclick="addComment('${post._id}')">Comment</button>
+  `;
+
+  // ✅ THIS LINE WAS MISSING
+  feed.appendChild(div);
+
+}); // ✅ THIS WAS MISSING
 
 loadPosts();
 async function likePost(id) {
